@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+BITBUCKET_CATALINA=/opt/atlassian/bitbucket
+
+chown -Rf bitbucket:bitbucket $BITBUCKET_CATALINA
+chmod 0700 $BITBUCKET_CATALINA
+
+#DEBHELPER#
+
+exit 0
