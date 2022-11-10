@@ -1,0 +1,15 @@
+[Unit]
+Description=Atlassian Bitbucket
+After=multi-user.target
+Wants=multi-user.target
+
+[Service]
+Type=forking
+User=bitbucket
+Group=bitbucket
+ExecStart=/opt/atlassian/bitbucket/bin/start-bitbucket.sh
+ExecStop=/opt/atlassian/bitbucket/bin/stop-bitbucket.sh
+PIDFile=/var/atlassian/application-data/bitbucket/log/bitbucket.pid
+
+[Install]
+WantedBy=multi-user.target
