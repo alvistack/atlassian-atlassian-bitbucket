@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+BITBUCKET_DOWNLOAD_URL=http://product-downloads.atlassian.com/software/stash/downloads/atlassian-bitbucket-8.9.5.tar.gz
+BITBUCKET_DOWNLOAD_DEST=/tmp/atlassian-bitbucket-8.9.5.tar.gz
+BITBUCKET_DOWNLOAD_CHECKSUM=f4e139ef50130aa3056c89e8ddeea469006d63656a48fe3eaee48dec87208758
+
+BITBUCKET_CATALINA=/opt/atlassian/bitbucket
+BITBUCKET_PATCH=/opt/atlassian/atlassian-bitbucket.patch
+
+wget -c $BITBUCKET_DOWNLOAD_URL -O $BITBUCKET_DOWNLOAD_DEST
+echo -n "$BITBUCKET_DOWNLOAD_CHECKSUM $BITBUCKET_DOWNLOAD_DEST" | sha256sum -c -
+
+rm -rf $BITBUCKET_CATALINA
+mkdir -p $BITBUCKET_CATALINA
+tar zxf $BITBUCKET_DOWNLOAD_DEST -C $BITBUCKET_CATALINA --strip-components=1
+
+cat $BITBUCKET_PATCH | patch -p1 -d /
+chmod a+x $BITBUCKET_CATALINA/bin/start-bitbucket.sh
+chmod a+x $BITBUCKET_CATALINA/bin/stop-bitbucket.sh
+find $BITBUCKET_CATALINA -type f -name '*.so' -exec chrpath -d {} \;
+find $BITBUCKET_CATALINA -type f -name '*.bak' -delete
+find $BITBUCKET_CATALINA -type f -name '*.orig' -delete
+find $BITBUCKET_CATALINA -type f -name '*.rej' -delete
+fdupes -qnrps $BITBUCKET_CATALINA
+
+chown -Rf bitbucket:bitbucket $BITBUCKET_CATALINA
+chmod 0700 $BITBUCKET_CATALINA
+
+#DEBHELPER#
+
+exit 0
