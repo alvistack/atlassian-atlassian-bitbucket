@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -euxo pipefail
+
+BITBUCKET_HOME=/var/atlassian/application-data/bitbucket
+
+if [ ! -d $BITBUCKET_HOME -a ! -L $BITBUCKET_HOME ]; then
+    mkdir -p $BITBUCKET_HOME
+fi
+
+if ! getent group bitbucket >/dev/null; then
+    groupadd \
+        --system \
+        bitbucket
+fi
+
+if ! getent passwd bitbucket >/dev/null; then
+    useradd \
+        --system \
+        --gid bitbucket \
+        --home-dir $BITBUCKET_HOME \
+        --no-create-home \
+        --shell /usr/sbin/nologin \
+        bitbucket
+fi
+
+chown -Rf bitbucket:bitbucket $BITBUCKET_HOME
+chmod 0750 $BITBUCKET_HOME
+
+#DEBHELPER#
+
+exit 0
