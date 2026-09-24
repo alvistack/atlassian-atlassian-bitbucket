@@ -1,0 +1,5 @@
+atlassian-bitbucket source: file-without-copyright-information
+atlassian-bitbucket source: license-problem-json-evil
+atlassian-bitbucket source: no-debian-changes
+atlassian-bitbucket source: source-contains-prebuilt-windows-binary
+atlassian-bitbucket source: source-is-missing
